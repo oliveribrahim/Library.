@@ -1,5 +1,4 @@
 package main.project;
-
 import main.project.service.ApplicationServiceImpl;
 
 public class main {

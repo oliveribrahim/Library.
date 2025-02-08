@@ -6,12 +6,8 @@ public class ValidationServiceImpl implements ValidationService {
     public boolean validateUserName(String userName) {
 
         // TODO return true if userName start with upper case and length must be greater than or equal 3
-        if(Character.isUpperCase(userName.charAt(0))&& userName.length()>=3)
-        {
-            return true;
-        }
+        return Character.isUpperCase(userName.charAt(0)) && userName.length() >= 3;
         // else false
-        return false;
     }
 
     @Override

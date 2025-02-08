@@ -12,7 +12,6 @@ public class Ewallet {
 
     private List<Account> accounts = new ArrayList<>();
 
-
     public String getName() {
         return name;
     }

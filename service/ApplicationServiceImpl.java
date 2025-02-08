@@ -62,11 +62,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         AccountService accountService = new AccountServiceImpl();
         Account account = new Account(name, password);
         // 4.TODO   impl createAccount
-        account.setUserName(name);
-        account.setPassword(password);
+
         boolean isAccountCreated = accountService.createAccount(account);
         if (!isAccountCreated) {
             System.out.println("Account Created");
+            run();
         } else {
             System.out.println("Account not Created Because There exist account with same user name");
         }
@@ -96,62 +96,110 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
 
         AccountService accountService = new AccountServiceImpl();
+        Account account = new Account();
         // 8.TODO SERVICE OF ACCOUNT TO LOGIN
-        if (accountService.loginAccount(new Account(name, password))) {
+        if (!accountService.loginAccount(account)) {
             System.out.println("Login Success");
-            services();
+            services(account);
         } else {
             System.out.println("Account not Exist");
         }
     }
 
-    private void services() {
+    private void services(Account account) {
+        Scanner scanner = new Scanner(System.in); // Ensure you have a scanner initialized
 
-        System.out.println("1.Deposit   2.Withdraw    3.show details    4.Transfer    5. show balance   6.exit  7.logout");
+        System.out.println("1. Deposit   2. Withdraw   3. Show Details   4. Transfer   5. Show Balance   6. Exit   7. Logout");
+        int counter = 0;
 
-        // TODO create switch case such as on run function
-        // TODO every case on switch call function  don't forget (Invalid choose)
-        int counter=0;
-        while (counter < 0)
-        {
+        while (counter <= 4) {
+            System.out.print("Enter your choice: ");
             int choose = scanner.nextInt();
-            //#######
+
+            switch (choose) {
+                case 1:
+                    deposit(account); // Call deposit method
+                    break;
+                case 2:
+                    withdraw(account); // Call withdraw method
+                    break;
+                case 3:
+                    showDetails(account); // Call show details method
+                    break;
+                case 4:
+                    transfer(account); // Call transfer method
+                    break;
+                case 5:
+                    showBalance(account); // Call show balance method
+                    break;
+                case 6:
+                    System.out.println("Exiting services. Thank you!");
+                    return; // Exit the method to stop further execution
+                case 7:
+                    logout(); // Call logout method
+                    break; // Exit the method after logout
+                default:
+                    System.out.println("Invalid choice, please try again!");
+            }
+
+            counter++;
         }
     }
+
 
     // TODO create deposit function
-    void deposit(Account a){
-        // input int money
+    void deposit(Account a) {
         Scanner scanner = new Scanner(System.in);
-        double mo = scanner.nextDouble();
-        // TODO pls validate money >= 100 and <= 20000
-        if(mo >= 100 && mo <= 20000)
-        {
-            // i dont know what is the next step
-        }
+        System.out.println("Please enter the amount to deposit (between 100 and 20000):");
+        double mo = scanner.nextDouble(); // Input the deposit amount
 
+        // Validate the deposit amount
+        if (mo >= 100 && mo <= 20000) {
+            // Update the account balance
+            a.setBalance(a.getBalance() + mo); // Add the deposit amount to the balance
+            System.out.println("Deposit successful!");
+            System.out.println("Your new balance is: " + a.getBalance());
+        } else {
+            // If the input amount is invalid
+            System.out.println("Invalid amount. Please enter a value between 100 and 20000.");
+        }
     }
+
 
     // TODO create Withdraw function
-    void withdraw(Account a){
-         int money = scanner.nextInt();   // input int money
-        // TODO pls validate money >= 100 and <= 8000
-        System.out.println("Please Enter your number of money from 100 to 8000 in once");
+    void withdraw(Account a) {
+        System.out.println("Please enter the amount to withdraw (between 100 and 8000):");
+        int money = scanner.nextInt(); // Input the withdrawal amount
 
-        if(money<a.getBalance())
-        {
-            if(money >= 100 && money <= 8000){
-                System.out.println("Withdraw is successful \nyour balance now is : "+(a.getBalance()- money));
+        // Validate the input amount
+        if (money >= 100 && money <= 8000) {
+            // Check if the account has enough balance
+            if (money <= a.getBalance()) {
+                // Perform the withdrawal
+                a.setBalance(a.getBalance() - money); // Deduct the amount from the account balance
+                System.out.println("Withdrawal successful!");
+                System.out.println("Your new balance is: " + a.getBalance());
+            } else {
+                System.out.println("Insufficient balance. Your current balance is: " + a.getBalance());
             }
-            else {
-                System.out.println("sorry but number of money must be from 100 to 8000..... try again");
-            }
+        } else {
+            System.out.println("Invalid amount. Please enter a value between 100 and 8000.");
         }
     }
 
-    void showDetails(Account a){
 
+    void showDetails(Account a) {
+        if (a == null) {
+            System.out.println("Account details unavailable. Please ensure the account is valid.");
+            return;
+        }
+
+        System.out.println("Account Details:");
+        System.out.println("Name: " + a.getUserName());
+        System.out.println("Balance: " + a.getBalance());
+        System.out.println("Active: " + a.getActive()); // If there's an ID field
     }
+
 
     void transfer(Account withdrawAccount){
         // TODO USER MUST give me user name of account that will transfer
@@ -162,6 +210,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     void showBalance(Account a){
-        System.out.println("Your Balance is : " + a.getBalance());
+        System.out.println("Your Balance now is : " + a.getBalance());
+    }
+
+    void logout() {
+        System.out.println("Thanks for using E-Wallet System");
+        run();
     }
 }
