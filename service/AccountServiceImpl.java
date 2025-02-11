@@ -13,7 +13,7 @@ public class AccountServiceImpl implements AccountService {
     public boolean createAccount(Account account) {
         List<Account> accountList = ewallet.getAccounts();
         for (Account a : accountList) {
-            if (a.getUserName().equals(account.getUserName())) {
+            if (a.getUserName().equalsIgnoreCase(account.getUserName())) {
                 System.out.println("Account with username " + account.getUserName() + " already exists.");
                 return false;
             }
@@ -51,7 +51,34 @@ public class AccountServiceImpl implements AccountService {
 
 
     // TODO create function with name deposit that return
+    public boolean deposit(String userName, double amount) {
+        // Check if the deposit amount is valid (positive value)
+        if (amount <= 0) {
+            System.out.println("Deposit amount should be greater than zero.");
+            return false;
+        }
 
+        // Fetch the list of accounts from eWallet
+        List<Account> accountList = ewallet.getAccounts();
+        // Find the account by username
+        for (Account account : accountList) {
+            if (account.getUserName().equalsIgnoreCase(userName)) {
+                // Check if the account is active
+                if (!account.getActive()) {
+                    System.out.println("Account is not active. Deposit failed.");
+                    return false;
+                }
+                // Perform the deposit
+                account.setBalance(account.getBalance() + amount);
+                System.out.println("Deposit successful. New balance for " + userName + ": $" + account.getBalance());
+                return true;
+            }
+        }
+
+        // Account does not exist
+        System.out.println("Account with username " + userName + " does not exist.");
+        return false;
+    }
     // TODO true if deposit success
     // TODO false if deposit fail
     // TODO check if account exist on wallet or not if not print account not exist
@@ -123,6 +150,9 @@ public class AccountServiceImpl implements AccountService {
             System.out.println("Account details unavailable. Account does not exist.");
             return;
         }
+        String userName = account.getUserName() != null ? account.getUserName() : "Unknown";
+        double balance = account.getBalance() >= 0 ? account.getBalance() : 0.0; // Ensure non-negative balance
+        String activeStatus = account.getActive() ? "Active" : "Inactive"; // Handle boolean status
 
         // Display account details
         System.out.println("---- Account Details ----");

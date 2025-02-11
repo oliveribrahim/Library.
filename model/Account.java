@@ -13,7 +13,7 @@ public class Account {
     public Account(String userName, String password) {
         this.userName = userName;
         this.password = password;
-        this.balance = 0;
+        this.balance = getBalance() >= 0 ? getBalance() : 0;
         this.active = true;
     }
 
@@ -47,5 +47,8 @@ public class Account {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+    public void ActiveAccount(){
+        this.active = true;
     }
 }

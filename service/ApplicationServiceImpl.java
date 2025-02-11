@@ -48,7 +48,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         ValidationService validationService = new ValidationServiceImpl();
 
         // 2.TODO Validation on UserName and Password
-        if (!validationService.validateUserName(name)) { // "eslam"
+        if (!validationService.validateUserName(name)) { //default false "eslam"
             System.out.println("Invalid UserName");
             return;
         }
@@ -64,7 +64,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         // 4.TODO   impl createAccount
 
         boolean isAccountCreated = accountService.createAccount(account);
-        if (!isAccountCreated) {
+        if (isAccountCreated) {
             System.out.println("Account Created");
             run();
         } else {
@@ -114,8 +114,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         while (counter <= 4) {
             System.out.print("Enter your choice: ");
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number between 1 and 7.");
+                scanner.next(); // Consume the invalid input to avoid infinite loop
+                continue; // Skip to the next iteration
+            }
             int choose = scanner.nextInt();
-
             switch (choose) {
                 case 1:
                     deposit(account); // Call deposit method
@@ -139,7 +143,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     logout(); // Call logout method
                     break; // Exit the method after logout
                 default:
-                    System.out.println("Invalid choice, please try again!");
+                    System.out.println("Invalid choice, please try again!!");
             }
 
             counter++;
@@ -167,20 +171,20 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     // TODO create Withdraw function
-    void withdraw(Account a) {
+    void withdraw(Account account) {
         System.out.println("Please enter the amount to withdraw (between 100 and 8000):");
         int money = scanner.nextInt(); // Input the withdrawal amount
 
         // Validate the input amount
         if (money >= 100 && money <= 8000) {
             // Check if the account has enough balance
-            if (money <= a.getBalance()) {
+            if (money <= account.getBalance()) {
                 // Perform the withdrawal
-                a.setBalance(a.getBalance() - money); // Deduct the amount from the account balance
+                account.setBalance(account.getBalance() - money); // Deduct the amount from the account balance
                 System.out.println("Withdrawal successful!");
-                System.out.println("Your new balance is: " + a.getBalance());
+                System.out.println("Your new balance is: " + account.getBalance());
             } else {
-                System.out.println("Insufficient balance. Your current balance is: " + a.getBalance());
+                System.out.println("Insufficient balance. Your current balance is: " + account.getBalance());
             }
         } else {
             System.out.println("Invalid amount. Please enter a value between 100 and 8000.");
@@ -188,16 +192,23 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 
-    void showDetails(Account a) {
-        if (a == null) {
+    void showDetails(Account account) {
+        if (account == null) {
             System.out.println("Account details unavailable. Please ensure the account is valid.");
             return;
         }
+        if(account.getUserName() == null)
+        {account.setUserName("Unknown");}
+        else{account.setUserName(account.getUserName());}
+
+        double balance = account.getBalance() >= 0 ? account.getBalance() : 0.0; // Ensure non-negative balance
+        String activeStatus = account.getActive() ? "Active" : "Inactive"; // Handle boolean status
+
 
         System.out.println("Account Details:");
-        System.out.println("Name: " + a.getUserName());
-        System.out.println("Balance: " + a.getBalance());
-        System.out.println("Active: " + a.getActive()); // If there's an ID field
+        System.out.println("Name: " + account.getUserName());
+        System.out.println("Balance: " + account.getBalance());
+        System.out.println("Active: " + account.getActive()); // If there's an ID field
     }
 
 
@@ -209,8 +220,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     }
 
-    void showBalance(Account a){
-        System.out.println("Your Balance now is : " + a.getBalance());
+    void showBalance(Account account){
+        System.out.println("Your Balance now is : " + account.getBalance());
     }
 
     void logout() {
