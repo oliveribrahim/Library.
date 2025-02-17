@@ -6,6 +6,10 @@ import java.util.Scanner;
 
 public class ApplicationServiceImpl implements ApplicationService {
     Scanner scanner = new Scanner(System.in);
+
+
+    ValidationService validationService = new ValidationServiceImpl();
+
     @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
@@ -59,10 +63,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // 3.TODO SERVICE OF ACCOUNT TO CREATE ACCOUNT
 
-        AccountService accountService = new AccountServiceImpl();
         Account account = new Account(name, password);
         // 4.TODO   impl createAccount
-
+        AccountService accountService = new AccountServiceImpl();
         boolean isAccountCreated = accountService.createAccount(account);
         if (isAccountCreated) {
             System.out.println("Account Created");
@@ -82,7 +85,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         System.out.println("Please Enter password");
         String password = scanner.nextLine();
 
-        ValidationService validationService = new ValidationServiceImpl();
 
         // TODO Validation on UserName and Password
         if (!validationService.validateUserName(name)) {
@@ -94,13 +96,11 @@ public class ApplicationServiceImpl implements ApplicationService {
             System.out.println("Invalid Password");
             return;
         }
-
-        AccountService accountService = new AccountServiceImpl();
-        Account account = new Account();
         // 8.TODO SERVICE OF ACCOUNT TO LOGIN
-        if (!accountService.loginAccount(account)) {
+        AccountService accountService = new AccountServiceImpl();
+        if (!accountService.loginAccount(new Account(name,password))) {
             System.out.println("Login Success");
-            services(account);
+            services(new Account(name,password));
         } else {
             System.out.println("Account not Exist");
         }

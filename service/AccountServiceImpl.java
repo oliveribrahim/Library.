@@ -18,7 +18,7 @@ public class AccountServiceImpl implements AccountService {
                 return false;
             }
         }
-            accountList.add(account);
+        ewallet.getAccounts().add(account);
             System.out.println("Account created successfully for username: " + account.getUserName());
             return true; // Return true as account creation was successful
 
